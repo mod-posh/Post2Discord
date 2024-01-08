@@ -1,0 +1,31 @@
+name: Discord Notification Workflow
+
+on:
+  workflow_call:
+    inputs:
+      message:
+        required: true
+        type: string
+    secrets:
+      discord_webhook_url:
+        required: true
+
+jobs:
+  notify_bluesky:
+    runs-on: ubuntu-latest
+    name: Send notification to Discord
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Send BlueSky Notification
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.discord_webhook_url }}
+          MESSAGE: ${{ inputs.message }}
+        run: |
+          python3 post2discord.py $DISCORD_WEBHOOK_URL "$MESSAGE"

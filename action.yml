@@ -1,0 +1,15 @@
+name: 'Post2Discord'
+description: 'Send notifications to Discord social media for new content updates.'
+branding:
+  icon: 'bell'
+  color: 'blue'
+
+inputs:
+  message:
+    description: 'Message to be posted on Discord'
+    required: true
+    default: ''
+
+runs:
+  using: 'python'
+  main: 'post2discord.py'
