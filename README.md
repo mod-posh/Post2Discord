@@ -44,7 +44,7 @@ To use these secrets in your GitHub Actions workflows, refer to them by their na
 ```yaml
 jobs:
   notify_discord:
-    uses: jeffpatton1971/Post2Discord@v1
+    uses: jeffpatton1971/Post2Discord@v0.0.1.2
     with:
       message: "New blog post published!"
     env:
