@@ -1,5 +1,7 @@
 name: 'Post2Discord'
 description: 'Send notifications to Discord social media for new content updates.'
+author: 'Jeff Patton'
+
 branding:
   icon: 'bell'
   color: 'blue'
