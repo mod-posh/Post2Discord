@@ -1,12 +1,11 @@
 # Post to Discord GitHub Action
 
-This repository contains a GitHub Action (`post2discord.yml`) and a PowerShell script (`post2discord.ps1) that sends notifications to a Discord channel when a new project version is released. It supports PowerShell modules (.psd1) and C# projects (.csproj).
+This repository contains a GitHub Action (`post2discord.yml`) and a PowerShell script (`post2discord.ps1`) that sends notifications to a Discord channel. The message to be posted is provided as input to the action, making it flexible for various use cases.
 
 ## Features
 
-- Dynamically determine the version of the project.
-- Construct a notification message with links to the project on GitHub and either NuGet or PowerShell Gallery.
-- Send the notification message to a specified Discord channel via webhook.
+- Accepts a custom message to post to Discord, allowing for flexible notifications.
+- Sends the provided message to a specified Discord channel via webhook.
 
 ## Usage
 
@@ -16,44 +15,77 @@ The `post2discord.yml` is a reusable GitHub Actions workflow that allows you to 
 
 #### Inputs
 
-- `source`: The path to the project file (either `.psd1` or `.csproj`).
-- `projectName`: The name of the project, used in the notification message and to construct the URL to PowerShell Gallery or NuGet.
+- `message`: The custom message to post to Discord.
 
 #### Secrets
 
-- `discordWebhook`: The webhook URL for the Discord channel where notifications will be sent.
+- `discordWebhook`: The webhook URL for the Discord channel to send notifications to.
 
 ### PowerShell Script
 
-The `post2discord.ps1` PowerShell script sends a formatted message to Discord. It determines the project's version and constructs a message based on the project type.
+The `post2discord.ps1` PowerShell script sends the provided message to Discord via the webhook URL.
 
 #### Parameters
 
-- `Source`: Path to the project file.
-- `ProjectName`: Name of the project.
-- `DiscordWebhook`: Discord webhook URL.
+- `Message`: The custom message to post to Discord.
+- `DiscordWebhook`: The Discord webhook URL.
 
 ### Example Workflow Call
 
 ```yaml
+name: Post to Discord Example
+
+on:
+  push:
+
 jobs:
-  call_notify_discord:
-    uses: ./.github/workflows/post2discord.yml@main
-    with:
-      source: 'path/to/projectfile.psd1'
-      projectName: 'MyProject'
-    secrets:
-      discordWebhook: ${{ secrets.DISCORD_WEBHOOK }}
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Discord
+        uses: mod-posh/Post2Discord@v1
+        with:
+          message: 'A new update has been released!'
+        secrets:
+          discordWebhook: ${{ secrets.DISCORD_WEBHOOK }}
+```
+
+### Passing a Dynamic Message
+
+You can dynamically construct the message in your calling workflow using GitHub environment variables or other inputs:
+
+```yaml
+name: Post to Discord Dynamic Example
+
+on:
+  push:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Discord
+        uses: mod-posh/Post2Discord@v1
+        with:
+          message: |
+            🚀 A new version of ${{ github.event.repository.name }} has been released!
+            Visit: ${{ github.event.repository.html_url }}
+        secrets:
+          discordWebhook: ${{ secrets.DISCORD_WEBHOOK }}
 ```
 
 ## Setup Instructions
 
-1. Store your Discord webhook URL in your repository's secrets as `DISCORD_WEBHOOK`.
-2. Call the `post2discord.yml` workflow from your main workflow file, providing the necessary inputs and secrets.
+1. **Add Discord Webhook to Secrets**:
+   Store your Discord webhook URL in your repository's secrets as `DISCORD_WEBHOOK`.
+
+2. **Use the Action**:
+   Add the `Post2Discord` action to your workflows and provide the `message` input and `discordWebhook` secret.
 
 ## Error Handling
 
-The script includes basic error handling and will output a simplified error message if it encounters an issue.
+- **Debugging**: Set the `VERBOSE` environment variable to `verbose` in your workflow or runner environment to enable additional debug output.
+- **Error Messages**: The script provides basic error messages if issues occur during execution.
 
 ## Contributions
 

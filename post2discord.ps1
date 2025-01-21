@@ -1,44 +1,41 @@
 param (
- [string]$Source,
- [string]$ProjectName,
- [string]$DiscordWebhook
+ [string]$Message,
+ [string]$DiscordWebhook,
+ [switch]$Verbose
 )
+
 try
 {
  $ErrorActionPreference = 'Stop';
  $Error.Clear();
 
- $SourcePath = Get-Item -Path $Source;
- $GitHubRepoUrl = "https://github.com/$($env:GITHUB_REPOSITORY)"
-
- if (Test-Path -Path $SourcePath)
+ if ($Verbose.IsPresent)
  {
-  switch ($SourcePath.Extension)
-  {
-   ".psd1"
-   {
-    $Module = Import-PowerShellDataFile -Path $SourcePath
-    $Version = $Module.ModuleVersion
-    $PowerShellGalleryUrl = "https://www.powershellgallery.com/packages/$($ProjectName)"
-    $DiscordMessage = @{
-     content = "Version $Version of $($ProjectName) released. Please visit Github ($($GitHubRepoUrl)) or PowerShellGallery.com ($($PowerShellGalleryUrl)) to download."
-    }
-   }
-   ".csproj"
-   {
-    $Project = [xml](Get-Content -Path $SourcePath);
-    $Version = $Project.Project.PropertyGroup.Version.ToString();
-    $PackageId = $Project.Project.PropertyGroup.PackageId;
-    $NugetUrl = "https://nuget.org/packages/$PackageId"
-    $DiscordMessage = @{
-     content = "Version $Version of $($ProjectName) released. Please visit Github ($($GitHubRepoUrl)) or Nuget.org ($($NugetUrl)) to download."
-    }
-   }
-  }
-  Invoke-RestMethod -Uri $DiscordWebhook -Body ($DiscordMessage | ConvertTo-Json -Compress) -Method Post -ContentType 'application/json; charset=UTF-8'
+  Write-Host "DEBUG: Post2Discord"
+  Write-Host "Message        : $($Message)"
+  Write-Host "DiscordWebhook : $($DiscordWebhook)"
+ }
+
+ # Validate DiscordWebhook URL
+ if (-not $DiscordWebhook -or -not $DiscordWebhook -match '^https?://')
+ {
+  throw "Invalid DiscordWebhook URL."
+ }
+
+ $DiscordMessage = @{
+  content = $Message
+ }
+
+ Invoke-RestMethod -Uri $DiscordWebhook -Body ($DiscordMessage | ConvertTo-Json -Compress) -Method Post -ContentType 'application/json; charset=UTF-8'
+
+ if ($Verbose.IsPresent)
+ {
+  Write-Host "DEBUG: Message successfully sent to Discord."
  }
 }
 catch
 {
- Write-Host "Error occurred: $($_.Exception.Message)"
+ Write-Error "An error occurred: $($_.Exception.Message)"
+ Write-Error "Details: $($_.InvocationInfo | Out-String)"
+ throw
 }

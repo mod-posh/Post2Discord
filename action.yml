@@ -1,5 +1,5 @@
 name: 'Post2Discord'
-description: 'Send notifications to Discord social media for new content updates.'
+description: 'A GitHub Action to send notifications to a Discord channel via webhook'
 author: 'Jeff Patton'
 
 branding:
@@ -8,10 +8,21 @@ branding:
 
 inputs:
   message:
-    description: 'Message to be posted on Discord'
+    description: 'The message to post to Discord.'
     required: true
-    default: ''
+
+secrets:
+  discordWebhook:
+    description: 'The webhook URL for the Discord channel where notifications will be sent.'
+    required: true
 
 runs:
-  using: 'python'
-  main: 'post2discord.py'
+  using: 'composite'
+  steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Send Discord Notification
+      run: |
+        pwsh -File post2discord.ps1 -Message "${{ inputs.message }}" -DiscordWebhook "${{ secrets.discordWebhook }}"
+      shell: pwsh
