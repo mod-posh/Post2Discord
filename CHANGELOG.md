@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [[0.0.3.2]](https://github.com/mod-posh/Post2Bluesky/releases/tag/v0.0.3.2) - 2025-01-21
+
+### Changes
+
+- **Action.yml**: Added `& $env:GITHUB_ACTION_PATH\\` to access the file properly.
+
+---
+
 ## [[0.0.3.1]](https://github.com/mod-posh/Post2Bluesky/releases/tag/v0.0.3.1) - 2025-01-21
 
 ### Changes
