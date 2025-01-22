@@ -1,5 +1,5 @@
 name: 'Post2Discord'
-description: 'A GitHub Action to send notifications to a Discord channel via webhook'
+description: 'A GitHub Action to send a notification to a Discord channel via webhook.'
 author: 'Jeff Patton'
 
 branding:
@@ -10,10 +10,8 @@ inputs:
   message:
     description: 'The message to post to Discord.'
     required: true
-
-secrets:
   discordWebhook:
-    description: 'The webhook URL for the Discord channel where notifications will be sent.'
+    description: 'The Discord webhook URL to send the notification to.'
     required: true
 
 runs:
@@ -24,5 +22,5 @@ runs:
 
     - name: Send Discord Notification
       run: |
-        pwsh -File post2discord.ps1 -Message "${{ inputs.message }}" -DiscordWebhook "${{ secrets.discordWebhook }}"
+        pwsh -File post2discord.ps1 -Message "${{ inputs.message }}" -DiscordWebhook "${{ inputs.discordWebhook }}"
       shell: pwsh

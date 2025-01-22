@@ -6,11 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
-## [[0.0.3.0]](https://github.com/mod-posh/Post2Bluesky/releases/tag/v0.0.3.0) - 2025-01-21
+## [[0.0.3.1]](https://github.com/mod-posh/Post2Bluesky/releases/tag/v0.0.3.1) - 2025-01-21
 
-Here’s a concise list of changes for your changelog:
+### Changes
+
+- **Inputs Update**: Added `discordWebhook` as a required input to pass the Discord webhook URL securely.
+- **Secret Handling**: Updated the script to use `${{ inputs.discordWebhook }}` instead of referencing `secrets.discordWebhook` directly.
+- **Compatibility Fix**: Resolved an issue with composite actions by explicitly passing the webhook URL as an input.
+- **Documentation Update**: Adjusted example workflows to reflect the new input structure for `discordWebhook`.
 
 ---
+
+## [[0.0.3.0]](https://github.com/mod-posh/Post2Bluesky/releases/tag/v0.0.3.0) - 2025-01-21
 
 ### Changes
 

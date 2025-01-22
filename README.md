@@ -43,10 +43,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Notify Discord
-        uses: mod-posh/Post2Discord@v1
+        uses: mod-posh/Post2Discord@v0.0.3.0
         with:
           message: 'A new update has been released!'
-        secrets:
           discordWebhook: ${{ secrets.DISCORD_WEBHOOK }}
 ```
 
@@ -70,7 +69,6 @@ jobs:
           message: |
             🚀 A new version of ${{ github.event.repository.name }} has been released!
             Visit: ${{ github.event.repository.html_url }}
-        secrets:
           discordWebhook: ${{ secrets.DISCORD_WEBHOOK }}
 ```
 
